@@ -1,6 +1,7 @@
 package twoEggs;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 public class Gauss {
 	private BigDecimal floors;
@@ -20,31 +21,47 @@ public class Gauss {
 		BigDecimal b = new BigDecimal(1);
 		BigDecimal c = floors.multiply(new BigDecimal(-2) );		
 		BigDecimal maxSteps;
+		BigDecimal numerator; 
+		BigDecimal denominator;
 		
-		maxSteps = (b.negate().add(sqrt(b.multiply(b).subtract(new BigDecimal(4).multiply(a).multiply(c) ), 100) ) ).divide(new BigDecimal(2).multiply(a), 0,  BigDecimal.ROUND_DOWN);
+		numerator = b.negate().add(sqrt(b.multiply(b).subtract(new BigDecimal(4).multiply(a).multiply(c) ), 10) );
+		denominator = new BigDecimal(2).multiply(a);
 		
-//		if( maxSteps.subtract(maxSteps.toBigInteger() ) >= new BigDecimal(0.5) ) {
-//			maxSteps=(int)maxSteps+1;
-//		}else {
-//			maxSteps=(int)maxSteps;
-//		}
+		maxSteps = numerator.divide(denominator, 0, BigDecimal.ROUND_HALF_UP);
+		
 		
 		maxSteps.toBigInteger();
 		
 		return maxSteps;
 	}
 	
-	public static BigDecimal sqrt(BigDecimal A, final int SCALE) {
-	    BigDecimal x0 = new BigDecimal("0");
-	    BigDecimal x1 = new BigDecimal(Math.sqrt(A.doubleValue()));
-	    while (!x0.equals(x1)) {
-	        x0 = x1;
-	        x1 = A.divide(x0, SCALE, BigDecimal.ROUND_HALF_UP);
-	        x1 = x1.add(x0);
-	        x1 = x1.divide(TWO, SCALE, BigDecimal.ROUND_HALF_UP);
-
-	    }
-	    return x1;
-	}
+	private static BigDecimal sqrt(BigDecimal x, int scale)
+    {
+        // Check that x >= 0.
+        if (x.signum() < 0) {
+            throw new IllegalArgumentException("x < 0");
+        }
+ 
+        // n = x*(10^(2*scale))
+        BigInteger n = x.movePointRight(scale << 1).toBigInteger();
+ 
+        // The first approximation is the upper half of n.
+        int bits = (n.bitLength() + 1) >> 1;
+        BigInteger ix = n.shiftRight(bits);
+        BigInteger ixPrev;
+ 
+        // Loop until the approximations converge
+        // (two successive approximations are equal after rounding).
+        do {
+            ixPrev = ix;
+ 
+            // x = (x + n/x)/2
+            ix = ix.add(n.divide(ix)).shiftRight(1);
+ 
+            Thread.yield();
+        } while (ix.compareTo(ixPrev) != 0);
+ 
+        return new BigDecimal(ix, scale);
+    }
 
 }

@@ -44,9 +44,12 @@ public class MainFrame {
 		
 		for(int i=0; i<floorArray.length; i++) {
 			String stringNumber = textReader.readLine();
-			BigDecimal number = new BigDecimal(stringNumber);
-			
-			floorArray[i]=number;
+			if(stringNumber.length()>0) {
+				BigDecimal number = new BigDecimal(stringNumber);
+				floorArray[i]=number;
+			}else {
+				i--;
+			}
 		}
 		
 		textReader.close();
