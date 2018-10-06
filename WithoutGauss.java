@@ -1,31 +1,35 @@
 package twoEggs;
 
+import java.math.BigDecimal;
+
 public class WithoutGauss {
-	private int floors;
+	private BigDecimal floors;
 	
-	public WithoutGauss(int floors) {
+	public WithoutGauss(BigDecimal floors) {
 		this.floors = floors;
 	}
 	
-	protected void calculate() {
+	protected BigDecimal calculate() {
 		//Without Gauss: n+(n-1)+(n-2)+(n-3)+(n-4)+...+1 = floors
 		
-		int maxSteps=1;
-		int cnt=1;
-		int sum=0;
+		BigDecimal maxSteps = new BigDecimal("1");
+		BigDecimal cnt = new BigDecimal("1");
+		BigDecimal sum = new BigDecimal("0");
 		
-		while(sum<floors) {
-			cnt++;
+		while(sum.compareTo(floors) == -1) {
+			cnt = cnt.add( new BigDecimal("1") );
 			maxSteps=cnt;
-			sum=0;
-			while(maxSteps>=1) {
-				sum += maxSteps;
-				maxSteps--;
+			sum = new BigDecimal("0");
+			while(maxSteps.compareTo( new BigDecimal("1") ) >= 0 ) {
+				sum = sum.add(maxSteps);
+				maxSteps = maxSteps.subtract( new BigDecimal("1") );
 			}
-		}
+		} 
 		maxSteps = cnt;
 		
-		System.out.printf("Ergebniss (ohne Gauss berechnet) ist: %d\n", maxSteps);
+		//System.out.printf("Ergebniss (ohne Gauss berechnet) ist: %s\n", maxSteps.toString());
+		
+		return maxSteps;
 		
 	}
 

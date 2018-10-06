@@ -10,7 +10,7 @@ public class Gauss {
 		this.floors = floors;
 	}
 	
-	protected void calculate() {
+	protected BigDecimal calculate() {
 		/*
 		 * Gauss: n(n+1)/2=floors
 		 * => n²+n-2floors = 0
@@ -31,8 +31,7 @@ public class Gauss {
 		
 		maxSteps.toBigInteger();
 		
-		System.out.printf("Ergebniss (mit Gauss berechnet) ist: %s\n", maxSteps.toString() );
-		
+		return maxSteps;
 	}
 	
 	public static BigDecimal sqrt(BigDecimal A, final int SCALE) {

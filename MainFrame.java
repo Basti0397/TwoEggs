@@ -1,23 +1,58 @@
 package twoEggs;
 
+import java.io.*;
 import java.math.BigDecimal;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
+import java.util.concurrent.Future;
 
 public class MainFrame {
 	
+	private static final BigDecimal[] floorArray = new BigDecimal[6];
+	private static boolean gaus = false;
+	private static int pools = 0;
+	private static String path = "";
+	private static File floors = null;
+	private static Result[] res = new Result[6];
+	
 	public static void main(String[] args) throws Exception {
-		BigDecimal floors = new BigDecimal("93326215443944152681699238856266700490715968264381621468592963895217599993229915608941463976156518286253697920827223758251185210916864000000000000000000000000");
-		boolean gaus = false;
-		int pools = 0;
 		
+		//Checks if the input is correct
 		if(args.length==0) {
 			throw new Exception("Zu wenig Argumente");
-		}else if( (args.length==1 && !args[0].matches("-pool\\d+") ) || (!args[1].matches("-pool\\d+") )  ){
+		}else if( (args.length==1 && !args[0].matches("-pool\\d+") ) || (args.length==2 && !args[1].matches("-pool\\d+") )  ){
 			throw new Exception("Die Thread Pool groesse muss angegeben werden");
 		}
 		
+		//Read the path to the floors file
+		try {
+			
+			InputStreamReader isr = new InputStreamReader(System.in);
+			BufferedReader br = new BufferedReader(isr);
+			
+			System.out.printf("Path to the file (Format: C:\\Folder\\filename.txt): \n");
+			path = br.readLine();
+			
+			floors = new File(path);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		//Read the floors file
+		BufferedReader textReader = new BufferedReader(new FileReader(floors) );
+		
+		for(int i=0; i<floorArray.length; i++) {
+			String stringNumber = textReader.readLine();
+			BigDecimal number = new BigDecimal(stringNumber);
+			
+			floorArray[i]=number;
+		}
+		
+		textReader.close();
+		
+		
+		//Checks the arguments behind the application start
 		if(args[0].equals("-gauss") ) {
 			gaus=true;
 		}
@@ -30,67 +65,48 @@ public class MainFrame {
 			pools = cPools - 48;
 		}
 		
+		
 		ExecutorService executor = Executors.newFixedThreadPool(pools);
 		
 		if(gaus) {
-			executor.execute(new Handler(new Gauss(floors) ) );
+			for(int i=0; i<floorArray.length; i++) {
+				Future<Result> futureRes = executor.submit(new Handler(new Gauss(floorArray[i] ) ) );
+				res[i] = futureRes.get();
+			}
+			
 		}else {
-			//executor.execute(new Handler(new WithoutGauss(floors)));
+			for(int i=0; i<floorArray.length; i++) {
+				Future<Result> futureRes = executor.submit(new Handler(new WithoutGauss(floorArray[i] ) ) );
+				res[i] = futureRes.get();
+			}
 		}
 		
 		executor.shutdown();
 		
-		
-//		String path = "";
-//		boolean isFile = false;
-//		File floors = null;
-//		
-//		try {
-//			
-//			while( !isFile ) {
-//				InputStreamReader isr = new InputStreamReader(System.in);
-//				BufferedReader br = new BufferedReader(isr);
-//				
-//				System.out.printf("Path to the file (Format: C:\\Folder\\filename.txt): \n");
-//				path = br.readLine();
-//				
-//				floors = new File(path);
-//				
-//				if( floors.isFile() ) {
-//					isFile=true;
-//					System.out.println("Valid path");
-//				}else {
-//					System.out.printf("Not a valid file, please try again.\n");
-//				}
-//			}
-//			
-//			
-//			
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//		
-		
-		
-		
-		
-		
-		
-//		if(gaus) {
-//			//Gauss:
-//			Gauss g = new Gauss();
-//			maxSteps = g.calculate(floors);
-//			
-//			System.out.printf("Es wird die Summenformel benutzt\n");
-//		}else {
-//			//Without Gauss:
-//			WithoutGauss wG = new WithoutGauss();
-//			maxSteps = wG.calculate(floors);
-//			
-//			System.out.printf("Es wurde nicht die Summenformel benutzt\n");
-//		}
-//		
+		for(int i=0; i<res.length; i++) {
+			System.out.println();
+			System.out.printf("%s | ", res[i].getResult().toString() );
+			System.out.printf("%s | ", res[i].getStartTime() );
+			System.out.printf("%s | ", res[i].getEndTime() );
+			System.out.printf("%d ms\n", res[i].getTimeDiff() );
+			System.out.println();
+		}
 		
 	}
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

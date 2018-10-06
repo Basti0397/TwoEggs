@@ -1,33 +1,40 @@
 package twoEggs;
 
 import java.sql.Timestamp;
+import java.util.concurrent.Callable;
 
-public class Handler implements Runnable{
+public class Handler implements Callable<Result>{
 	
 	private final Gauss gauss;
 	private final WithoutGauss wG;
+	private final Result handlerRes;
 	
 	public Handler(WithoutGauss wG) {
 		this.gauss = null;
 		this.wG = wG;
+		handlerRes = new Result();
 	}
 	
 	public Handler(Gauss gauss) {
 		this.gauss = gauss;
 		this.wG = null;
+		handlerRes = new Result();
 	}
 
 	@Override
-	public void run() {
-		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		System.out.println(timestamp);
+	public Result call() {
+		
+		handlerRes.setStartTime(new Timestamp(System.currentTimeMillis()));
+		
 		if(gauss!=null) {
-			gauss.calculate();
+			handlerRes.setResult(gauss.calculate() );
 		}else {
-			wG.calculate();
+			handlerRes.setResult( wG.calculate() );
 		}
-		timestamp = new Timestamp(System.currentTimeMillis());
-		System.out.println(timestamp);
+		
+		handlerRes.setEndTime(new Timestamp(System.currentTimeMillis()));
+		
+		return handlerRes;
 	}
 	
 	
