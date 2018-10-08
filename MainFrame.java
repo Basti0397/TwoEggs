@@ -8,12 +8,13 @@ import java.util.concurrent.Future;
 
 public class MainFrame {
 	
-	private static final BigDecimal[] floorArray = new BigDecimal[6];
+	private static final BigDecimal[] floorArray = new BigDecimal[7];
 	private static boolean gaus = false;
 	private static int pools = 0;
 	private static String path = "";
 	private static File floors = null;
-	private static Result[] res = new Result[6];
+	private static Result[] res = new Result[7];
+	private static Future<Result>[] futureArray = new Future[7];
 	
 	public static void main(String[] args) throws Exception {
 		
@@ -73,18 +74,21 @@ public class MainFrame {
 		
 		if(gaus) {
 			for(int i=0; i<floorArray.length; i++) {
-				Future<Result> futureRes = executor.submit(new Handler(new Gauss(floorArray[i] ) ) );
-				res[i] = futureRes.get();
+				futureArray[i] = executor.submit(new Handler(new Gauss(floorArray[i] ) ) );
+                 
 			}
 			
 		}else {
 			for(int i=0; i<floorArray.length; i++) {
-				Future<Result> futureRes = executor.submit(new Handler(new WithoutGauss(floorArray[i] ) ) );
-				res[i] = futureRes.get();
+				futureArray[i] = executor.submit(new Handler(new WithoutGauss(floorArray[i] ) ) );
 			}
 		}
 		
 		executor.shutdown();
+		
+		for(int i=0; i<futureArray.length; i++) {
+		    res[i] = futureArray[i].get();
+		}
 		
 		for(int i=0; i<res.length; i++) {
 			System.out.println();
