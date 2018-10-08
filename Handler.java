@@ -24,7 +24,8 @@ public class Handler implements Callable<Result>{
 	@Override
 	public Result call() {
 		
-		handlerRes.setStartTime(new Timestamp(System.currentTimeMillis()));
+	    handlerRes.setStartTime(new Timestamp(System.currentTimeMillis()));
+		handlerRes.setTimeStartNano(System.nanoTime());
 		
 		if(gauss!=null) {
 			handlerRes.setResult(gauss.calculate() );
@@ -33,6 +34,7 @@ public class Handler implements Callable<Result>{
 		}
 		
 		handlerRes.setEndTime(new Timestamp(System.currentTimeMillis()));
+        handlerRes.setTimeEndNano(System.nanoTime());
 		
 		return handlerRes;
 	}

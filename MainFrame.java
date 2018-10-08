@@ -8,13 +8,17 @@ import java.util.concurrent.Future;
 
 public class MainFrame {
 	
-	private static final BigDecimal[] floorArray = new BigDecimal[7];
+    private static final int AMOUNT = 7;
+	private static BigDecimal[] floorArray = new BigDecimal[AMOUNT];
+	private static Result[] res = new Result[AMOUNT];
+    private static Future<Result>[] futureArray = new Future[AMOUNT];
 	private static boolean gaus = false;
 	private static int pools = 0;
 	private static String path = "";
-	private static File floors = null;
-	private static Result[] res = new Result[7];
-	private static Future<Result>[] futureArray = new Future[7];
+	private static File inputFloors = null;
+	private static File outputResult = null;
+	
+	
 	
 	public static void main(String[] args) throws Exception {
 		
@@ -31,17 +35,20 @@ public class MainFrame {
 			InputStreamReader isr = new InputStreamReader(System.in);
 			BufferedReader br = new BufferedReader(isr);
 			
-			System.out.printf("Path to the file (Format: C:\\Folder\\filename.txt): \n");
+			System.out.printf("Path to the input file (Format: C:\\Folder\\filename.txt): \n");
 			path = br.readLine();
+			inputFloors = new File(path);
 			
-			floors = new File(path);
+			System.out.printf("Path to the output file (Format: C:\\Folder\\filename.txt): \n");
+            path = br.readLine();
+            outputResult = new File(path);
 			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
 		//Read the floors file
-		BufferedReader textReader = new BufferedReader(new FileReader(floors) );
+		BufferedReader textReader = new BufferedReader(new FileReader(inputFloors) );
 		
 		for(int i=0; i<floorArray.length; i++) {
 			String stringNumber = textReader.readLine();
@@ -75,7 +82,6 @@ public class MainFrame {
 		if(gaus) {
 			for(int i=0; i<floorArray.length; i++) {
 				futureArray[i] = executor.submit(new Handler(new Gauss(floorArray[i] ) ) );
-                 
 			}
 			
 		}else {
@@ -90,15 +96,18 @@ public class MainFrame {
 		    res[i] = futureArray[i].get();
 		}
 		
+		PrintWriter pw = new PrintWriter(new FileWriter(outputResult));
+		        
 		for(int i=0; i<res.length; i++) {
-			System.out.println();
-			System.out.printf("%s | ", res[i].getResult().toString() );
-			System.out.printf("%s | ", res[i].getStartTime() );
+			System.out.printf("\n%s | ", res[i].getResult().toString() );
+			System.out.printf("%s | ", res[i].getStartTime().toLocalDateTime() );
 			System.out.printf("%s | ", res[i].getEndTime() );
-			System.out.printf("%d ms\n", res[i].getTimeDiff() );
-			System.out.println();
+			System.out.printf("%d ns\n\n", res[i].getTimeDiff() );
+			pw.printf("\n%s | ", res[i].getResult().toString() );
+			pw.printf("%s | ", res[i].getStartTime().toLocalDateTime() );
+            pw.printf("%s | ", res[i].getEndTime() );
+            pw.printf("%d ns\n\n", res[i].getTimeDiff() );
 		}
-		
 	}
 
 }

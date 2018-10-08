@@ -9,8 +9,27 @@ public class Result {
 	private Timestamp endTime;
 	private BigDecimal result;
 	private long timeDiff;
+	private long timeStartNano;
+	private long timeEndNano;
 	
-	public Result() {
+	public long getTimeStartNano() {
+        return timeStartNano;
+    }
+
+    public void setTimeStartNano(long timeStart) {
+        this.timeStartNano = timeStart;
+    }
+
+    public long getTimeEndNano() {
+        return timeEndNano;
+    }
+
+    public void setTimeEndNano(long timeEnd) {
+        this.timeEndNano = timeEnd;
+        this.setTimeDiff();
+    }
+
+    public Result() {
 		startTime = null;
 		endTime = null; 
 		result = null;
@@ -23,7 +42,7 @@ public class Result {
 	
 	public void setEndTime(Timestamp endTime) {
 		this.endTime = endTime;
-		this.setTimeDiff();
+		
 	}
 	
 	public void setResult(BigDecimal result) {
@@ -31,7 +50,7 @@ public class Result {
 	}
 	
 	public void setTimeDiff() {
-		timeDiff = endTime.getTime() - startTime.getTime();
+		timeDiff = timeEndNano - timeStartNano;
 	}
 
 	public Timestamp getStartTime() {
