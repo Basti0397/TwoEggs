@@ -88,7 +88,7 @@ public class MainFrame {
 			String poolSize = String.format("%d", pools);
 			
 			//Set the output variable
-            outputResult = new File("C:\\Users\\Basti-PC\\Documents\\eclipse_workspace\\TwoEggs\\data\\Results\\" + filename + "_" + gausString + "_" + poolSize + "Thread(s)" + ".txt");
+            outputResult = new File("C:\\Users\\Basti-PC\\Documents\\eclipse_workspace\\TwoEggs\\src\\data\\Results\\" + filename + "_" + gausString + "_" + poolSize + "Thread(s)" + ".txt");
 			
 		} catch (IOException e) {
 			e.printStackTrace();
