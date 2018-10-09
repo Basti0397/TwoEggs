@@ -88,7 +88,7 @@ public class MainFrame {
 			String poolSize = String.format("%d", pools);
 			
 			//Set the output variable
-            outputResult = new File("C:\\Users\\Basti-PC\\Documents\\eclipse_workspace\\TwoEggs\\src\\data\\Results\\" + filename + "_" + gausString + "_" + poolSize + "Thread(s)" + ".txt");
+            outputResult = new File("C:\\Users\\Basti-Laptop\\Documents\\eclipse_workspace\\TwoEggs\\src\\data\\Results\\" + filename + "_" + gausString + "_" + poolSize + "Thread(s)" + ".txt");
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -109,10 +109,6 @@ public class MainFrame {
 		}
 		
 		textReader.close();
-		
-		
-		
-		
 		
 		ExecutorService executor = Executors.newFixedThreadPool(pools);
 		
@@ -139,11 +135,11 @@ public class MainFrame {
 			System.out.printf("\n%s | ", res[i].getResult().toString() );
 			System.out.printf("%s | ", res[i].getStartTime() );
 			System.out.printf("%s | ", res[i].getEndTime() );
-			System.out.printf("%d ns\n\n", res[i].getTimeDiff() );
+			System.out.printf("%,d ns\n\n", res[i].getTimeDiff() );
 			pw.printf("%s | ", res[i].getResult().toString() );
 			pw.printf("%s | ", res[i].getStartTime() );
             pw.printf("%s | ", res[i].getEndTime() );
-            pw.printf("%d ns%n%n", res[i].getTimeDiff() );
+            pw.printf("%,d ns%n%n", res[i].getTimeDiff() );
 		}
 		
 		long timeSum = 0;
@@ -156,11 +152,11 @@ public class MainFrame {
 		
 		System.out.printf("7 tasks finished\n");
 		System.out.printf("Program time: %d ms\n",  timeDiffProgramm);
-		System.out.printf("All tasks: %d ns, %d ms\n", timeSum, timeSum/1000000);
+		System.out.printf("All tasks: %,d ns, %d ms\n", timeSum, timeSum/1000000);
 		
 		pw.printf("7 tasks finished%n");
 		pw.printf("Program time: %d ms%n",  timeDiffProgramm);
-		pw.printf("All tasks: %d ns, %d ms\n", timeSum, timeSum/1000000);
+		pw.printf("All tasks: %,d ns, %d ms\n", timeSum, timeSum/1000000);
 				
 		pw.close();
 	}
