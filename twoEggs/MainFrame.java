@@ -2,6 +2,7 @@ package twoEggs;
 
 import java.io.*;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -17,16 +18,44 @@ public class MainFrame {
 	private static String path = "";
 	private static File inputFloors = null;
 	private static File outputResult = null;
+	private static long timeDiffProgramm;
+	private static Timestamp startProgramm;
+	private static Timestamp endProgramm;
 	
 	
 	
 	public static void main(String[] args) throws Exception {
+		
+		startProgramm = new Timestamp(System.currentTimeMillis() );
 		
 		//Checks if the input is correct
 		if(args.length==0) {
 			throw new Exception("Zu wenig Argumente");
 		}else if( (args.length==1 && !args[0].matches("-pool\\d+") ) || (args.length==2 && !args[1].matches("-pool\\d+") )  ){
 			throw new Exception("Die Thread Pool groesse muss angegeben werden");
+		}
+		
+		//Checks the arguments behind the application start
+		if(args[0].equals("-gauss") ) {
+			gaus=true;
+		}
+		
+		if(gaus) {
+			char cPools = args[1].charAt(5);
+			pools = cPools - 48;
+			
+			if(args[1].length()>6) {
+				pools *= 10;
+				pools += (args[1].charAt(6)-48);
+			}
+		}else {
+			char cPools = args[0].charAt(5);
+			pools = cPools - 48;
+			
+			if(args[0].length()>6) {
+				pools *= 10;
+				pools += (args[0].charAt(6)-48);
+			}
 		}
 		
 		//Read the path to the floors file
@@ -39,13 +68,32 @@ public class MainFrame {
 			path = br.readLine();
 			inputFloors = new File(path);
 			
-			System.out.printf("Path to the output file (Format: C:\\Folder\\filename.txt): \n");
-            path = br.readLine();
-            outputResult = new File(path);
+			int cnt=0;
+			String filename = "";
+			while( path.charAt(cnt)!='.' ) {
+				cnt++;
+			}
+			cnt--;
+			while( path.charAt(cnt)!='\\') {
+				filename = path.charAt(cnt) + filename;
+				cnt--;
+			}
+			String gausString = "";
+			if(gaus) {
+				gausString = "Gauss";
+			}else {
+				gausString = "without_Gauss";
+			}
+			
+			String poolSize = String.format("%d", pools);
+			
+			//Set the output variable
+            outputResult = new File("C:\\Users\\Basti-PC\\Documents\\eclipse_workspace\\TwoEggs\\data\\Results\\" + filename + "_" + gausString + "_" + poolSize + "Thread(s)" + ".txt");
 			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
 		
 		//Read the floors file
 		BufferedReader textReader = new BufferedReader(new FileReader(inputFloors) );
@@ -63,18 +111,7 @@ public class MainFrame {
 		textReader.close();
 		
 		
-		//Checks the arguments behind the application start
-		if(args[0].equals("-gauss") ) {
-			gaus=true;
-		}
 		
-		if(gaus) {
-			char cPools = args[1].charAt(5);
-			pools = cPools - 48;
-		}else {
-			char cPools = args[0].charAt(5);
-			pools = cPools - 48;
-		}
 		
 		
 		ExecutorService executor = Executors.newFixedThreadPool(pools);
@@ -100,14 +137,32 @@ public class MainFrame {
 		        
 		for(int i=0; i<res.length; i++) {
 			System.out.printf("\n%s | ", res[i].getResult().toString() );
-			System.out.printf("%s | ", res[i].getStartTime().toLocalDateTime() );
+			System.out.printf("%s | ", res[i].getStartTime() );
 			System.out.printf("%s | ", res[i].getEndTime() );
 			System.out.printf("%d ns\n\n", res[i].getTimeDiff() );
-			pw.printf("\n%s | ", res[i].getResult().toString() );
-			pw.printf("%s | ", res[i].getStartTime().toLocalDateTime() );
+			pw.printf("%s | ", res[i].getResult().toString() );
+			pw.printf("%s | ", res[i].getStartTime() );
             pw.printf("%s | ", res[i].getEndTime() );
-            pw.printf("%d ns\n\n", res[i].getTimeDiff() );
+            pw.printf("%d ns%n%n", res[i].getTimeDiff() );
 		}
+		
+		long timeSum = 0;
+		for(int i=0; i<res.length; i++) {
+			timeSum += res[i].getTimeDiff();
+		}
+		
+		endProgramm = new Timestamp(System.currentTimeMillis() );
+		timeDiffProgramm = endProgramm.getTime() - startProgramm.getTime();
+		
+		System.out.printf("7 tasks finished\n");
+		System.out.printf("Program time: %d ms\n",  timeDiffProgramm);
+		System.out.printf("All tasks: %d ns, %d ms\n", timeSum, timeSum/1000000);
+		
+		pw.printf("7 tasks finished%n");
+		pw.printf("Program time: %d ms%n",  timeDiffProgramm);
+		pw.printf("All tasks: %d ns, %d ms\n", timeSum, timeSum/1000000);
+				
+		pw.close();
 	}
 
 }

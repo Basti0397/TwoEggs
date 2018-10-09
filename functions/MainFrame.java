@@ -16,12 +16,12 @@ public class MainFrame {
 		File[] floors = new File[6];
 		PrintWriter fileWriter;
 		
-		floors[0] = new File("C:\\Users\\Basti-PC\\Desktop\\TwoEggs\\x.txt");
-		floors[1] = new File("C:\\Users\\Basti-PC\\Desktop\\TwoEggs\\lg(x).txt");
-		floors[2] = new File("C:\\Users\\Basti-PC\\Desktop\\TwoEggs\\x².txt");
-		floors[3] = new File("C:\\Users\\Basti-PC\\Desktop\\TwoEggs\\xlog10(x).txt");
-		floors[4] = new File("C:\\Users\\Basti-PC\\Desktop\\TwoEggs\\x³.txt");
-		floors[5] = new File("C:\\Users\\Basti-PC\\Desktop\\TwoEggs\\x!.txt");
+		floors[0] = new File("C:\\Users\\Basti-PC\\Documents\\eclipse_workspace\\TwoEggs\\data\\Input\\x.txt");
+		floors[1] = new File("C:\\Users\\Basti-PC\\Documents\\eclipse_workspace\\TwoEggs\\data\\Input\\lg(x).txt");
+		floors[2] = new File("C:\\Users\\Basti-PC\\Documents\\eclipse_workspace\\TwoEggs\\data\\Input\\x_quadrat.txt");
+		floors[3] = new File("C:\\Users\\Basti-PC\\Documents\\eclipse_workspace\\TwoEggs\\data\\Input\\xlog10(x).txt");
+		floors[4] = new File("C:\\Users\\Basti-PC\\Documents\\eclipse_workspace\\TwoEggs\\data\\Input\\x_kubik.txt");
+		floors[5] = new File("C:\\Users\\Basti-PC\\Documents\\eclipse_workspace\\TwoEggs\\data\\Input\\x!.txt");
 		
 		//x
 		fileWriter = new PrintWriter( new FileWriter(floors[0]) );
@@ -35,7 +35,16 @@ public class MainFrame {
 		fileWriter = new PrintWriter( new FileWriter(floors[1]) );
 		
 		while(cnt<=x.length-1) {
-			fileWriter.printf("%f%n", Math.log10(x[cnt]) );
+			double res = Math.log10(x[cnt] );
+			long resRounded = 0;
+			
+			if( (res - (long)res) != 0 ) {
+				resRounded = (long)res + 1; 
+			}else {
+				resRounded = (long)res;
+			}
+			
+			fileWriter.printf("%d%n", resRounded );
 			cnt++;
 		}
 		cnt=0;
@@ -55,7 +64,16 @@ public class MainFrame {
 		fileWriter = new PrintWriter( new FileWriter(floors[3]) );
 		
 		while(cnt<=x.length-1) {
-			fileWriter.printf("%f%n", x[cnt]*Math.log10(x[cnt]) );
+			double res = x[cnt] * Math.log10(x[cnt] );
+			long resRounded = 0;
+			
+			if( (res - (long)res) != 0 ) {
+				resRounded = (long)res + 1; 
+			}else {
+				resRounded = (long)res;
+			}
+			
+			fileWriter.printf("%d%n", resRounded );
 			cnt++;
 		}
 		cnt=0;

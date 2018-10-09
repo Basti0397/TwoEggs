@@ -11,23 +11,6 @@ public class Result {
 	private long timeDiff;
 	private long timeStartNano;
 	private long timeEndNano;
-	
-	public long getTimeStartNano() {
-        return timeStartNano;
-    }
-
-    public void setTimeStartNano(long timeStart) {
-        this.timeStartNano = timeStart;
-    }
-
-    public long getTimeEndNano() {
-        return timeEndNano;
-    }
-
-    public void setTimeEndNano(long timeEnd) {
-        this.timeEndNano = timeEnd;
-        this.setTimeDiff();
-    }
 
     public Result() {
 		startTime = null;
@@ -35,6 +18,15 @@ public class Result {
 		result = null;
 		timeDiff = 0;
 	}
+    
+    public void setTimeStartNano(long timeStart) {
+        this.timeStartNano = timeStart;
+    }
+
+    public void setTimeEndNano(long timeEnd) {
+        this.timeEndNano = timeEnd;
+        this.setTimeDiff();
+    }
 	
 	public void setStartTime(Timestamp startTime) {
 		this.startTime = startTime;
@@ -69,6 +61,13 @@ public class Result {
 		return timeDiff;
 	}
 	
+	public long getTimeEndNano() {
+        return timeEndNano;
+    }
+	
+	public long getTimeStartNano() {
+        return timeStartNano;
+    }
 	
 
 }
